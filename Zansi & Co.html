@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zansi & Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lancelot&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241a12;
+    --base:#f2ebdf;
+    --surface:#faf7f1;
+    --camel:#a4794f;
+    --camel-deep:#7c5a38;
+    --dark:#1c130c;
+    --line: rgba(36,26,18,0.14);
+    --white:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--base);
+    color:var(--ink);
+    font-family:'Jost', sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Lancelot', serif;
+    font-weight:400;
+    letter-spacing:0.01em;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:'Jost', sans-serif;cursor:pointer;}
+  img{display:block;max-width:100%;}
+  .container{max-width:1240px;margin:0 auto;padding:0 32px;}
+
+  /* ---------- Nav ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(242,235,223,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.container{
+    display:flex;align-items:center;justify-content:space-between;
+    height:84px;
+  }
+  .logo{
+    font-family:'Lancelot', serif;
+    font-size:28px;
+    letter-spacing:0.02em;
+  }
+  .nav-links{display:flex;gap:40px;font-size:14px;letter-spacing:0.03em;}
+  .nav-links a{position:relative;padding:4px 0;}
+  .nav-links a::after{
+    content:'';position:absolute;left:0;bottom:0;width:0;height:1px;
+    background:var(--ink);transition:width .35s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .nav-icons{display:flex;align-items:center;gap:22px;}
+  .icon-btn{background:none;border:none;position:relative;display:flex;align-items:center;color:var(--ink);}
+  .icon-btn svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:1.3;}
+  .badge{
+    position:absolute;top:-8px;right:-10px;
+    background:var(--camel-deep);color:var(--white);
+    font-size:10px;width:16px;height:16px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;position:relative;overflow:hidden;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(164,121,79,0.16), transparent 60%),
+      linear-gradient(180deg, var(--base) 0%, #ece2d1 100%);
+    padding:80px 24px 60px;
+  }
+  .hero-eyebrow{
+    font-size:13px;letter-spacing:0.25em;color:var(--camel-deep);margin-bottom:22px;
+    opacity:0;animation:rise .9s .15s ease forwards;
+  }
+  .hero h1{
+    font-size:clamp(52px,9vw,124px);line-height:0.98;margin:0;
+    opacity:0;animation:rise 1s .35s ease forwards;
+  }
+  .hero p{
+    max-width:480px;margin:26px auto 0;font-size:17px;line-height:1.7;color:#4a3a2a;
+    opacity:0;animation:rise 1s .6s ease forwards;
+  }
+  .hero-cta{
+    margin-top:38px;display:inline-flex;gap:18px;
+    opacity:0;animation:rise 1s .85s ease forwards;
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translateY(18px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .btn{
+    padding:15px 34px;font-size:13px;letter-spacing:0.12em;border:1px solid var(--ink);
+    background:transparent;transition:background .3s ease,color .3s ease;
+  }
+  .btn:hover{background:var(--ink);color:var(--surface);}
+  .btn.solid{background:var(--ink);color:var(--surface);}
+  .btn.solid:hover{background:var(--camel-deep);border-color:var(--camel-deep);}
+
+  /* ---------- Section headings ---------- */
+  .section{padding:110px 0;}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:52px;gap:24px;flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(32px,4vw,48px);margin:0;}
+  .section-head p{max-width:360px;font-size:14px;line-height:1.7;color:#54443353;color:#55442f;margin:0;}
+
+  /* ---------- Statement strip ---------- */
+  .statement{
+    background:var(--dark);color:var(--base);padding:120px 24px;text-align:center;
+  }
+  .statement p{
+    max-width:760px;margin:0 auto;font-family:'Lancelot',serif;
+    font-size:clamp(24px,3.4vw,38px);line-height:1.5;
+  }
+
+  /* ---------- Shop grid ---------- */
+  .filters{display:flex;gap:10px;margin-bottom:40px;flex-wrap:wrap;}
+  .chip{
+    padding:9px 20px;border:1px solid var(--line);font-size:13px;background:transparent;
+    transition:all .25s ease;
+  }
+  .chip.active, .chip:hover{background:var(--ink);color:var(--surface);border-color:var(--ink);}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;}
+  .card{position:relative;cursor:pointer;}
+  .card-photo{
+    aspect-ratio:4/5;position:relative;overflow:hidden;background:var(--surface);
+    border:1px solid var(--line);
+  }
+  .card-photo .fill{
+    position:absolute;inset:0;transition:transform .7s cubic-bezier(.2,.7,.3,1);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .card:hover .card-photo .fill{transform:scale(1.06);}
+  .card-photo .tag{
+    position:absolute;top:14px;left:14px;background:var(--white);font-size:11px;
+    padding:5px 10px;letter-spacing:0.05em;
+  }
+  .wish-btn{
+    position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;
+    background:rgba(250,247,241,0.9);border:none;display:flex;align-items:center;justify-content:center;
+    transition:transform .2s ease;
+  }
+  .wish-btn:hover{transform:scale(1.1);}
+  .wish-btn svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:1.4;}
+  .wish-btn.active svg{fill:var(--camel-deep);stroke:var(--camel-deep);}
+  .card-info{padding:16px 2px 0;display:flex;justify-content:space-between;align-items:flex-start;}
+  .card-info h3{font-family:'Jost',sans-serif;font-weight:400;font-size:15px;margin:0 0 4px;}
+  .card-info .cat{font-size:12px;color:#7a6752;}
+  .card-info .price{font-size:14px;}
+
+  /* garment placeholder illustration */
+  .garment{width:56%;height:70%;opacity:0.85;}
+
+  /* ---------- About / Society ---------- */
+  .about{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+  .about-photo{aspect-ratio:3/4;background:linear-gradient(160deg,#cbb08a,#8c6a4e);position:relative;overflow:hidden;}
+  .about-photo::after{
+    content:'Z&C';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Lancelot',serif;font-size:64px;color:rgba(250,247,241,0.35);
+  }
+  .about h2{font-size:clamp(30px,4vw,44px);margin:0 0 24px;}
+  .about p{font-size:15px;line-height:1.85;color:#3a2c1e;margin:0 0 18px;}
+  .society-box{
+    margin-top:34px;padding:26px 28px;border:1px solid var(--line);background:var(--surface);
+  }
+  .society-box h4{margin:0 0 8px;font-family:'Lancelot',serif;font-size:20px;font-weight:400;}
+  .society-box p{margin:0;font-size:13.5px;line-height:1.7;color:#4a3a2a;}
+
+  /* ---------- Reviews ---------- */
+  .reviews-strip{
+    display:flex;gap:0;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .reviews-strip::-webkit-scrollbar{display:none;}
+  .review{
+    flex:0 0 360px;padding:44px 40px;border-right:1px solid var(--line);
+  }
+  .review .stars{color:var(--camel-deep);font-size:14px;letter-spacing:2px;margin-bottom:16px;}
+  .review p{font-size:15px;line-height:1.75;margin:0 0 18px;font-style:italic;}
+  .review .who{font-size:12px;letter-spacing:0.06em;color:#7a6752;}
+
+  /* ---------- Newsletter / footer ---------- */
+  .newsletter{
+    background:var(--camel-deep);color:var(--surface);padding:90px 24px;text-align:center;
+  }
+  .newsletter h2{font-size:clamp(28px,4vw,42px);margin:0 0 16px;}
+  .newsletter p{max-width:460px;margin:0 auto 34px;font-size:14px;line-height:1.7;opacity:0.85;}
+  .n-form{display:flex;justify-content:center;gap:0;max-width:440px;margin:0 auto;}
+  .n-form input{
+    flex:1;padding:15px 18px;border:1px solid rgba(250,247,241,0.5);background:transparent;color:var(--surface);
+    font-family:'Jost',sans-serif;font-size:14px;
+  }
+  .n-form input::placeholder{color:rgba(250,247,241,0.6);}
+  .n-form button{
+    padding:15px 28px;background:var(--surface);color:var(--camel-deep);border:1px solid var(--surface);font-size:13px;letter-spacing:0.08em;
+  }
+
+  footer{background:var(--dark);color:#d8cbb6;padding:70px 24px 30px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px;}
+  .foot-grid .logo{color:var(--base);}
+  .foot-grid p{font-size:13px;line-height:1.7;color:#a5947e;max-width:260px;}
+  .foot-grid h5{font-size:12px;letter-spacing:0.1em;color:#d8cbb6;margin:0 0 16px;text-transform:uppercase;}
+  .foot-grid ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;}
+  .foot-grid a{font-size:13.5px;color:#a5947e;transition:color .2s ease;}
+  .foot-grid a:hover{color:var(--base);}
+  .foot-bottom{
+    border-top:1px solid rgba(216,203,182,0.15);padding-top:24px;display:flex;justify-content:space-between;
+    font-size:12px;color:#7d6c58;flex-wrap:wrap;gap:12px;
+  }
+
+  /* ---------- Cart drawer ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(28,19,12,0.4);z-index:90;opacity:0;pointer-events:none;transition:opacity .35s ease;
+  }
+  .overlay.show{opacity:1;pointer-events:auto;}
+  .drawer{
+    position:fixed;top:0;right:0;height:100%;width:420px;max-width:92vw;background:var(--surface);
+    z-index:95;transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .drawer.show{transform:translateX(0);}
+  .drawer-head{padding:26px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+  .drawer-head h3{margin:0;font-size:20px;}
+  .drawer-close{background:none;border:none;font-size:22px;line-height:1;color:var(--ink);}
+  .drawer-body{flex:1;overflow-y:auto;padding:20px 28px;}
+  .cart-item{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);}
+  .cart-item .thumb{width:74px;height:92px;background:linear-gradient(160deg,#d8c3a2,#a4794f);flex:none;}
+  .cart-item .meta{flex:1;}
+  .cart-item h4{margin:0 0 4px;font-size:14.5px;font-weight:400;}
+  .cart-item .sub{font-size:12px;color:#7a6752;margin-bottom:8px;}
+  .cart-item .row{display:flex;justify-content:space-between;align-items:center;font-size:13px;}
+  .remove-btn{background:none;border:none;font-size:12px;color:#7a6752;text-decoration:underline;}
+  .empty-msg{padding:60px 0;text-align:center;color:#7a6752;font-size:14px;}
+  .drawer-foot{padding:24px 28px;border-top:1px solid var(--line);}
+  .drawer-foot .row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:16px;}
+  .pay-note{font-size:11px;color:#7a6752;margin-top:12px;line-height:1.6;}
+
+  /* ---------- Quick view modal ---------- */
+  .modal-wrap{
+    position:fixed;inset:0;z-index:98;display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .3s ease;padding:24px;
+  }
+  .modal-wrap.show{opacity:1;pointer-events:auto;}
+  .modal{
+    background:var(--surface);max-width:920px;width:100%;max-height:88vh;overflow-y:auto;
+    display:grid;grid-template-columns:1fr 1fr;transform:scale(.96);transition:transform .3s ease;
+  }
+  .modal-wrap.show .modal{transform:scale(1);}
+  .modal-photo{background:linear-gradient(160deg,#d8c3a2,#a4794f);aspect-ratio:4/5;position:relative;}
+  .modal-photo::after{content:attr(data-name);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Lancelot',serif;color:rgba(250,247,241,0.4);font-size:26px;padding:20px;text-align:center;}
+  .modal-info{padding:40px;}
+  .modal-info h2{margin:0 0 6px;font-size:26px;}
+  .modal-info .price{font-size:16px;color:#7a6752;margin-bottom:20px;}
+  .modal-info .desc{font-size:14px;line-height:1.75;color:#3a2c1e;margin-bottom:26px;}
+  .modal-close{position:absolute;top:18px;right:18px;background:var(--surface);border:none;width:34px;height:34px;border-radius:50%;font-size:18px;z-index:2;}
+  .modal-section-label{font-size:12px;letter-spacing:0.08em;color:#7a6752;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+  .size-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+  .size-chip{
+    width:44px;height:44px;border:1px solid var(--line);background:transparent;font-size:13px;
+    display:flex;align-items:center;justify-content:center;transition:all .2s ease;
+  }
+  .size-chip.active,.size-chip:hover{border-color:var(--ink);background:var(--ink);color:var(--surface);}
+  .size-chart-link{background:none;border:none;text-decoration:underline;font-size:12px;color:#7a6752;}
+  .size-chart-table{display:none;width:100%;border-collapse:collapse;margin:-10px 0 22px;font-size:12.5px;}
+  .size-chart-table.show{display:table;}
+  .size-chart-table th,.size-chart-table td{border:1px solid var(--line);padding:8px 10px;text-align:center;}
+  textarea{
+    width:100%;border:1px solid var(--line);background:transparent;padding:12px 14px;font-family:'Jost',sans-serif;
+    font-size:13.5px;resize:vertical;min-height:72px;margin-bottom:22px;
+  }
+  .modal-actions{display:flex;gap:12px;}
+  .modal-actions .btn{flex:1;}
+
+  @media (max-width:860px){
+    .nav-links{display:none;}
+    .grid{grid-template-columns:repeat(2,1fr);gap:20px;}
+    .about{grid-template-columns:1fr;gap:40px;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .modal{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="container">
+    <a class="logo" href="#home">Zansi &amp; Co.</a>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#shop">Shop</a>
+      <a href="#about">About</a>
+      <a href="#society">Society</a>
+      <a href="#reviews">Reviews</a>
+    </div>
+    <div class="nav-icons">
+      <button class="icon-btn" onclick="toggleWishlistPanel()">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.5 8 2.2 4 6 4c2 0 3.5 1.1 4.5 2.6C11.5 5.1 13 4 15 4c3.8 0 5.5 4 4 7.7C19.5 16.4 12 21 12 21z"/></svg>
+        <span class="badge" id="wishBadge">0</span>
+      </button>
+      <button class="icon-btn" onclick="toggleCart(true)">
+        <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-eyebrow">EST. 2021 — LAGOS</div>
+  <h1>Zansi &amp; Co.</h1>
+  <p>Considered pieces, quietly made. Tailoring built around warmth, texture, and restraint.</p>
+  <div class="hero-cta">
+    <a href="#shop" class="btn solid">Shop the edit</a>
+    <a href="#about" class="btn">Our story</a>
+  </div>
+</section>
+
+<section class="section" id="shop">
+  <div class="container">
+    <div class="section-head">
+      <h2>The Edit</h2>
+      <p>New arrivals, worked in brown, beige, and white — built to layer through every season.</p>
+    </div>
+    <div class="filters">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="women">Women</button>
+      <button class="chip" data-filter="men">Men</button>
+      <button class="chip" data-filter="accessories">Accessories</button>
+    </div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+</section>
+
+<div class="statement">
+  <p>&ldquo;We don't chase trend cycles. We build pieces meant to be worn until they belong to you.&rdquo;</p>
+</div>
+
+<section class="section" id="about">
+  <div class="container about">
+    <div class="about-photo"></div>
+    <div>
+      <h2>Who we are</h2>
+      <p>Zansi &amp; Co. started in 2021 as a small tailoring project — a search for clothing that felt considered rather than disposable. Every piece is developed slowly, in small batches, using fabric and construction chosen to last.</p>
+      <p>We build for people who want their wardrobe to say less and mean more. No noise, no logos shouting for attention — just proportion, material, and craft doing the talking.</p>
+      <div class="society-box" id="society">
+        <h4>Zansi Society</h4>
+        <p>Our members' circle — early access to new drops, private restocks, and a direct line to the studio. Zansi Society is how we build the brand together with the people who wear it, not just for them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="reviews" style="padding-bottom:0;">
+  <div class="container">
+    <div class="section-head">
+      <h2>Compliments</h2>
+      <p>What people are saying after their order arrives.</p>
+    </div>
+  </div>
+  <div class="reviews-strip" id="reviewStrip"></div>
+</section>
+
+<section class="newsletter">
+  <h2>Stay close to the studio</h2>
+  <p>Join the list for early access to drops, restocks, and Zansi Society invites.</p>
+  <form class="n-form" onsubmit="return handleNewsletter(event)">
+    <input type="email" placeholder="Your email address" required>
+    <button type="submit">Join</button>
+  </form>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="logo" style="margin-bottom:14px;">Zansi &amp; Co.</div>
+        <p>Considered clothing, made slowly. Lagos, Nigeria — est. 2021.</p>
+      </div>
+      <div>
+        <h5>Shop</h5>
+        <ul><li><a href="#shop">Women</a></li><li><a href="#shop">Men</a></li><li><a href="#shop">Accessories</a></li></ul>
+      </div>
+      <div>
+        <h5>Studio</h5>
+        <ul><li><a href="#about">About</a></li><li><a href="#society">Zansi Society</a></li><li><a href="#reviews">Reviews</a></li></ul>
+      </div>
+      <div>
+        <h5>Support</h5>
+        <ul><li><a href="#">Size guide</a></li><li><a href="#">Shipping &amp; returns</a></li><li><a href="#">Contact</a></li></ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Zansi &amp; Co. All rights reserved.</span>
+      <span>Payments secured by Paystack</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Cart drawer -->
+<div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h3>Your bag</h3>
+    <button class="drawer-close" onclick="toggleCart(false)">&times;</button>
+  </div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-foot" id="cartFoot">
+    <div class="row"><span>Subtotal</span><span id="cartSubtotal">₦0</span></div>
+    <button class="btn solid" style="width:100%;" onclick="checkout()">Checkout with Paystack</button>
+    <p class="pay-note">Payment placeholder — live Paystack checkout needs a small backend to create the transaction securely (your secret key can't sit in the browser). Happy to wire that up next.</p>
+  </div>
+</div>
+
+<!-- Wishlist drawer -->
+<div class="drawer" id="wishDrawer" style="width:380px;">
+  <div class="drawer-head">
+    <h3>Wishlist</h3>
+    <button class="drawer-close" onclick="toggleWishlistPanel(false)">&times;</button>
+  </div>
+  <div class="drawer-body" id="wishBody"></div>
+</div>
+
+<!-- Quick view modal -->
+<div class="modal-wrap" id="modalWrap" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-photo" id="modalPhoto"></div>
+    <div class="modal-info" id="modalInfo"></div>
+  </div>
+</div>
+
+<script>
+const PRODUCTS = [
+  {id:1,name:'Camel Wool Overcoat',cat:'women',price:186000,desc:'Full-length overcoat in double-face camel wool, with a soft rolled collar and horn buttons.'},
+  {id:2,name:'Beige Tailored Trousers',cat:'women',price:78000,desc:'High-waisted straight trousers in brushed cotton twill, finished with a hidden hook closure.'},
+  {id:3,name:'Espresso Leather Belt',cat:'accessories',price:42000,desc:'Full-grain leather belt in deep espresso, brass buckle, hand-burnished edges.'},
+  {id:4,name:'Ivory Silk Blouse',cat:'women',price:96000,desc:'Relaxed silk blouse in ivory with a fluid drape and mother-of-pearl buttons.'},
+  {id:5,name:'Brown Suede Trench',cat:'men',price:214000,desc:'Unlined suede trench in walnut brown, raglan sleeves, storm flap detailing.'},
+  {id:6,name:'Cream Knit Polo',cat:'men',price:68000,desc:'Lightweight cotton-silk knit polo in cream, ribbed collar and cuffs.'},
+  {id:7,name:'Taupe Wide-Leg Trousers',cat:'men',price:82000,desc:'Wide-leg trousers in taupe wool blend, pressed centre crease, side-adjuster waist.'},
+  {id:8,name:'Woven Rattan Tote',cat:'accessories',price:58000,desc:'Structured tote in woven rattan with leather trim and interior suede lining.'},
+  {id:9,name:'Sable Cashmere Scarf',cat:'accessories',price:64000,desc:'Oversized scarf in sable cashmere, fringed edge, made in a small studio run.'},
+];
+
+const REVIEWS = [
+  {q:'The coat is even better in person — the kind of piece you reach for every week.',who:'A. Okafor, Lagos'},
+  {q:'Ordering felt personal, not transactional. The note I left them was even referenced in my package.',who:'T. Adeyemi, Abuja'},
+  {q:"Fit is exact to the size chart. First brand in a while I haven't had to return anything from.",who:'M. Bello, London'},
+  {q:'Quiet, well-made, no logos shouting. Exactly what I was looking for.',who:'C. Nwosu, Lagos'},
+];
+
+const SIZES = ['XS','S','M','L','XL'];
+const SIZE_CHART = [
+  {size:'XS',chest:'84–88',waist:'64–68',hip:'88–92'},
+  {size:'S',chest:'89–93',waist:'69–73',hip:'93–97'},
+  {size:'M',chest:'94–98',waist:'74–78',hip:'98–102'},
+  {size:'L',chest:'99–104',waist:'79–84',hip:'103–108'},
+  {size:'XL',chest:'105–110',waist:'85–90',hip:'109–114'},
+];
+
+let cart = [];
+let wishlist = [];
+let currentProduct = null;
+let currentSize = null;
+
+function naira(n){ return '₦' + n.toLocaleString('en-NG'); }
+
+function garmentSVG(){
+  return `<svg class="garment" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 10 L40 2 L60 2 L70 10 L78 26 L66 32 L62 20 L62 118 L38 118 L38 20 L34 32 L22 26 Z"
+      fill="rgba(250,247,241,0.5)" stroke="rgba(250,247,241,0.7)" stroke-width="1"/>
+  </svg>`;
+}
+
+function renderGrid(filter='all'){
+  const grid = document.getElementById('productGrid');
+  const items = PRODUCTS.filter(p => filter==='all' || p.cat===filter);
+  grid.innerHTML = items.map(p => `
+    <div class="card" onclick="openModal(${p.id})">
+      <div class="card-photo">
+        <div class="fill" style="background:linear-gradient(160deg,#d8c3a2,#a4794f);">${garmentSVG()}</div>
+        <span class="tag">${p.cat}</span>
+        <button class="wish-btn ${wishlist.includes(p.id)?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id})">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C.5 8 2.2 4 6 4c2 0 3.5 1.1 4.5 2.6C11.5 5.1 13 4 15 4c3.8 0 5.5 4 4 7.7C19.5 16.4 12 21 12 21z"/></svg>
+        </button>
+      </div>
+      <div class="card-info">
+        <div>
+          <h3>${p.name}</h3>
+          <div class="cat">${p.cat}</div>
+        </div>
+        <div class="price">${naira(p.price)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    renderGrid(chip.dataset.filter);
+  });
+});
+
+function renderReviews(){
+  document.getElementById('reviewStrip').innerHTML = REVIEWS.map(r => `
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p>"${r.q}"</p>
+      <div class="who">${r.who}</div>
+    </div>
+  `).join('');
+}
+
+function openModal(id){
+  currentProduct = PRODUCTS.find(p=>p.id===id);
+  currentSize = null;
+  document.getElementById('modalPhoto').setAttribute('data-name', currentProduct.name);
+  document.getElementById('modalInfo').innerHTML = `
+    <h2>${currentProduct.name}</h2>
+    <div class="price">${naira(currentProduct.price)}</div>
+    <p class="desc">${currentProduct.desc}</p>
+    <div class="modal-section-label">
+      <span>Select size</span>
+      <button class="size-chart-link" onclick="toggleSizeChart()">Size chart</button>
+    </div>
+    <div class="size-row" id="sizeRow">
+      ${SIZES.map(s=>`<button class="size-chip" data-size="${s}" onclick="selectSize('${s}', this)">${s}</button>`).join('')}
+    </div>
+    <table class="size-chart-table" id="sizeChart">
+      <tr><th>Size</th><th>Chest (cm)</th><th>Waist (cm)</th><th>Hip (cm)</th></tr>
+      ${SIZE_CHART.map(r=>`<tr><td>${r.size}</td><td>${r.chest}</td><td>${r.waist}</td><td>${r.hip}</td></tr>`).join('')}
+    </table>
+    <div class="modal-section-label"><span>Note for this order</span></div>
+    <textarea id="orderNote" placeholder="Alterations, gifting notes, delivery instructions…"></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="toggleWish(${currentProduct.id}); closeModal();">Add to wishlist</button>
+      <button class="btn solid" onclick="addToCart()">Add to bag</button>
+    </div>
+  `;
+  document.getElementById('modalWrap').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modalWrap').classList.remove('show');
+  if(!document.getElementById('cartDrawer').classList.contains('show') && !document.getElementById('wishDrawer').classList.contains('show')){
+    document.getElementById('overlay').classList.remove('show');
+  }
+}
+function toggleSizeChart(){
+  document.getElementById('sizeChart').classList.toggle('show');
+}
+function selectSize(s, el){
+  currentSize = s;
+  document.querySelectorAll('#sizeRow .size-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+function addToCart(){
+  if(!currentSize){ alert('Please select a size first.'); return; }
+  const note = document.getElementById('orderNote').value;
+  cart.push({...currentProduct, size:currentSize, note, qty:1, lineId: Date.now()});
+  renderCart();
+  closeModal();
+  toggleCart(true);
+}
+function toggleWish(id){
+  const idx = wishlist.indexOf(id);
+  if(idx>-1){ wishlist.splice(idx,1); } else { wishlist.push(id); }
+  document.getElementById('wishBadge').textContent = wishlist.length;
+  renderGrid(document.querySelector('.chip.active').dataset.filter);
+  renderWishlist();
+}
+function renderWishlist(){
+  const items = PRODUCTS.filter(p=>wishlist.includes(p.id));
+  const body = document.getElementById('wishBody');
+  if(items.length===0){ body.innerHTML = '<div class="empty-msg">Nothing saved yet. Tap the heart on any piece to keep it here.</div>'; return; }
+  body.innerHTML = items.map(p=>`
+    <div class="cart-item">
+      <div class="thumb"></div>
+      <div class="meta">
+        <h4>${p.name}</h4>
+        <div class="sub">${naira(p.price)}</div>
+        <div class="row">
+          <button class="btn" style="padding:8px 14px;font-size:11px;" onclick="closeAllPanels();openModal(${p.id});">View</button>
+          <button class="remove-btn" onclick="toggleWish(${p.id})">Remove</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+function renderCart(){
+  document.getElementById('cartBadge').textContent = cart.length;
+  const body = document.getElementById('cartBody');
+  if(cart.length===0){
+    body.innerHTML = '<div class="empty-msg">Your bag is empty.</div>';
+  } else {
+    body.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="thumb"></div>
+        <div class="meta">
+          <h4>${item.name}</h4>
+          <div class="sub">Size ${item.size}${item.note? ' · note added':''}</div>
+          <div class="row">
+            <span>${naira(item.price)}</span>
+            <button class="remove-btn" onclick="removeFromCart(${item.lineId})">Remove</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  const subtotal = cart.reduce((s,i)=>s+i.price,0);
+  document.getElementById('cartSubtotal').textContent = naira(subtotal);
+}
+function removeFromCart(lineId){
+  cart = cart.filter(i=>i.lineId!==lineId);
+  renderCart();
+}
+function toggleCart(show){
+  document.getElementById('cartDrawer').classList.toggle('show', show);
+  document.getElementById('overlay').classList.toggle('show', show || document.getElementById('wishDrawer').classList.contains('show'));
+}
+function toggleWishlistPanel(show){
+  if(show===undefined) show = !document.getElementById('wishDrawer').classList.contains('show');
+  renderWishlist();
+  document.getElementById('wishDrawer').classList.toggle('show', show);
+  document.getElementById('overlay').classList.toggle('show', show || document.getElementById('cartDrawer').classList.contains('show'));
+}
+function closeAllPanels(){
+  document.getElementById('cartDrawer').classList.remove('show');
+  document.getElementById('wishDrawer').classList.remove('show');
+  document.getElementById('modalWrap').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+function checkout(){
+  if(cart.length===0){ alert('Your bag is empty.'); return; }
+  alert("This is where Paystack's checkout would open. Wiring up live payments needs a small backend endpoint to create the transaction (so your secret key stays off the browser) — glad to help set that up.");
+}
+function handleNewsletter(e){
+  e.preventDefault();
+  alert('Thanks for joining the list — connect an email tool (e.g. Mailchimp/Klaviyo) here to actually collect signups.');
+  e.target.reset();
+  return false;
+}
+
+renderGrid();
+renderReviews();
+renderCart();
+</script>
+
+</body>
+</html>
